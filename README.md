@@ -10,7 +10,7 @@ npm install post-message-bus
 
 ## Use
 
-`test` 目录下有例子, 打开控制台即可看到效果.
+`test` 目录下有例子, 点击访问 [例子](http://github.alanwei.net/PostMessageBus/test/parent.html) 打开控制台即可看到效果.
 
 父页面使用以下代码初始化: 
 
