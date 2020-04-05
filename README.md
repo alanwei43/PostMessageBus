@@ -8,6 +8,11 @@
 npm install post-message-bus
 ```
 
+或者直接引用
+```html
+<script src="http://github.alanwei.net/PostMessageBus/dist/post-message-bus.umd.js"></script>
+```
+
 ## Use
 
 `test` 目录下有例子, 点击访问 [例子](http://github.alanwei.net/PostMessageBus/test/parent.html) 打开控制台即可看到效果.

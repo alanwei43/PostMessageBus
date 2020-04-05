@@ -1,6 +1,6 @@
 {
   "name": "post-message-bus",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "跨iframe通信小工具",
   "main": "dist/post-message-bus.cjs.js",
   "libraryConfig": [
@@ -9,7 +9,7 @@
       "globalName": "PostMessageBus",
       "inputFile": "src/PostMessageBus.js",
       "outputFile": "dist/post-message-bus.{{format}}.js",
-      "version": "0.0.2"
+      "version": "0.0.3"
     }
   ],
   "scripts": {

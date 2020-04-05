@@ -1,8 +1,8 @@
 /*!
-  * PostMessageBus v0.0.2
+  * PostMessageBus v0.0.3
   * git+https://github.com/alanwei43/PostMessageBus.git
   * 
-  * @author 
+  * @author Alan Wei
   */
 var win = window;
 var URL_PARA_NAME = 'post-message-event-id';
