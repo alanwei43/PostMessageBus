@@ -1,5 +1,5 @@
 /*!
-  * PostMessageBus v0.0.1
+  * PostMessageBus v0.0.2
   * git+https://github.com/alanwei43/PostMessageBus.git
   * 
   * @author 

@@ -1,6 +1,6 @@
 {
   "name": "post-message-bus",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "跨iframe通信小工具",
   "main": "dist/post-message-bus.cjs.js",
   "libraryConfig": [
@@ -9,7 +9,7 @@
       "globalName": "PostMessageBus",
       "inputFile": "src/PostMessageBus.js",
       "outputFile": "dist/post-message-bus.{{format}}.js",
-      "version": "0.0.1"
+      "version": "0.0.2"
     }
   ],
   "scripts": {
@@ -20,8 +20,8 @@
     "type": "git",
     "url": "git+https://github.com/alanwei43/PostMessageBus.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["iframe", "postMessage", "window.postMessage", "javascript"],
+  "author": "Alan Wei",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/alanwei43/PostMessageBus/issues"
