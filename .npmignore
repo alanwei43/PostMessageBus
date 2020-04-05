@@ -1,0 +1,12 @@
+.vscode/
+build/
+.eslintignore
+.eslintrc.js
+.gitignore
+.mocharc.js
+.npmignore
+babel.config.js
+package-lock.json
+rollup.config.js
+server.js
+src/

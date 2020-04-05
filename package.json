@@ -1,0 +1,50 @@
+{
+  "name": "post-message-bus",
+  "version": "0.0.1",
+  "description": "跨iframe通信小工具",
+  "main": "dist/post-message-bus.cjs.js",
+  "libraryConfig": [
+    {
+      "name": "PostMessageBus",
+      "globalName": "PostMessageBus",
+      "inputFile": "src/PostMessageBus.js",
+      "outputFile": "dist/post-message-bus.{{format}}.js",
+      "version": "0.0.1"
+    }
+  ],
+  "scripts": {
+    "build": "node build/build-by-pkg.js",
+    "pub": "npm run build && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanwei43/PostMessageBus.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alanwei43/PostMessageBus/issues"
+  },
+  "homepage": "https://github.com/alanwei43/PostMessageBus#readme",
+  "devDependencies": {
+    "core-js": "^3.4.7",
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/register": "^7.6.2",
+    "@babel/runtime": "^7.6.3",
+    "eslint": "^6.5.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "rollup": "^1.23.1",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "terser": "^4.3.9"
+  }
+}
