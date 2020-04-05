@@ -119,8 +119,7 @@ var PostMessageBus = (function (exports) {
     var eventId = getRandomKey();
     var result = {
       frame: document.createElement('iframe'),
-      eventId: eventId,
-      ready: null
+      eventId: eventId
     };
 
     if (typeof link !== 'string') {
@@ -161,7 +160,7 @@ var PostMessageBus = (function (exports) {
         };
       }
     });
-    result.ready = new Promise(function (resolve, reject) {
+    var ready = new Promise(function (resolve, reject) {
       var msgListener = function msgListener(e) {
         var message = Config.deserializer(e.data);
 
@@ -169,20 +168,23 @@ var PostMessageBus = (function (exports) {
           return;
         }
 
+        if (message.command === eventId) {
+          // frame is ready
+          resolve({
+            frame: result.frame,
+            message: message,
+            eventId: eventId,
+            request: proxyReq
+          });
+          return;
+        }
+
         if (message.type === 'Request') {
           var responseData = getDoResponseData(doResponse, message.command, message.data, proxyReq);
-
-          if (message.command === eventId) {
-            // ready
-            resolve({
-              frame: result.frame,
-              message: message,
-              request: proxyReq
-            });
-          }
-
-          var responseMsg = initMessageData(eventId, message.msgId, message.command, 'Response', responseData);
-          postMsg2Frame(responseMsg);
+          Promise.resolve(responseData).then(function (resolvedData) {
+            var responseMsg = initMessageData(eventId, message.msgId, message.command, 'Response', resolvedData);
+            postMsg2Frame(responseMsg);
+          });
         }
 
         if (message.type === 'Response') {
@@ -207,7 +209,9 @@ var PostMessageBus = (function (exports) {
       });
       win.addEventListener('message', msgListener);
     });
-    return result;
+    ready.frame = result.frame;
+    ready.eventId = result.eventId;
+    return ready;
   }
   /**
    * 获取和parent的通信
@@ -257,15 +261,22 @@ var PostMessageBus = (function (exports) {
       }
     });
     win.addEventListener('message', function (e) {
+      if (!e.data) {
+        return;
+      }
+
       var message = Config.deserializer(e.data);
 
       if (message.__eventId !== eventId) {
-        console.warn('event id not equal');
+        console.warn('event id not equal', e.data);
       }
 
       if (message.type === 'Request') {
-        var responseMsg = initMessageData(message.__eventId, message.msgId, message.command, 'Response', getDoResponseData(doResponse, message.command, message.data, reqProxy));
-        postMsg2Parent(responseMsg);
+        var responseData = getDoResponseData(doResponse, message.command, message.data, reqProxy);
+        Promise.resolve(responseData).then(function (resolvedData) {
+          var responseMsg = initMessageData(message.__eventId, message.msgId, message.command, 'Response', resolvedData);
+          postMsg2Parent(responseMsg);
+        });
       }
 
       if (message.type === 'Response') {

@@ -100,8 +100,7 @@ export function generateBusToFrame(link, doResponse, targetOrigin) {
   const eventId = getRandomKey();
   const result = {
     frame: document.createElement('iframe'),
-    eventId: eventId,
-    ready: null
+    eventId: eventId
   };
   if (typeof link !== 'string') {
     throw new Error('link 不能为空');
@@ -121,7 +120,8 @@ export function generateBusToFrame(link, doResponse, targetOrigin) {
     command: 'command',
     callback: function () { }
   }];
-  const proxyReq = new Proxy({}, {
+  const proxyReq = new Proxy({
+  }, {
     get: function (_target, prop) {
       return function (data) {
         return new Promise((resolve) => {
@@ -140,26 +140,29 @@ export function generateBusToFrame(link, doResponse, targetOrigin) {
     }
   });
 
-  result.ready = new Promise((resolve, reject) => {
+  const ready = new Promise((resolve, reject) => {
     const msgListener = function (e) {
       const message = Config.deserializer(e.data);
 
       if (message.__eventId !== eventId) {
         return;
       }
+      if (message.command === eventId) {
+        // frame is ready
+        resolve({
+          frame: result.frame,
+          message: message,
+          eventId: eventId,
+          request: proxyReq
+        });
+        return;
+      }
       if (message.type === 'Request') {
         const responseData = getDoResponseData(doResponse, message.command, message.data, proxyReq);
-
-        if (message.command === eventId) {
-          // ready
-          resolve({
-            frame: result.frame,
-            message: message,
-            request: proxyReq
-          });
-        }
-        const responseMsg = initMessageData(eventId, message.msgId, message.command, 'Response', responseData);
-        postMsg2Frame(responseMsg);
+        Promise.resolve(responseData).then(resolvedData => {
+          const responseMsg = initMessageData(eventId, message.msgId, message.command, 'Response', resolvedData);
+          postMsg2Frame(responseMsg);
+        });
       }
       if (message.type === 'Response') {
         const matchCallback = callbackStacks.filter(item => item !== null).filter(item => item.command === message.command && item.id === message.msgId)[0];
@@ -177,7 +180,9 @@ export function generateBusToFrame(link, doResponse, targetOrigin) {
     });
     win.addEventListener('message', msgListener);
   });
-  return result;
+  ready.frame = result.frame;
+  ready.eventId = result.eventId;
+  return ready;
 }
 
 /**
@@ -226,15 +231,21 @@ export function generateBusToParent(doResponse, targetOrigin) {
   });
 
   win.addEventListener('message', function (e) {
+    if (!e.data) {
+      return;
+    }
     const message = Config.deserializer(e.data);
 
     if (message.__eventId !== eventId) {
-      console.warn('event id not equal');
+      console.warn('event id not equal', e.data);
     }
 
     if (message.type === 'Request') {
-      const responseMsg = initMessageData(message.__eventId, message.msgId, message.command, 'Response', getDoResponseData(doResponse, message.command, message.data, reqProxy));
-      postMsg2Parent(responseMsg);
+      const responseData = getDoResponseData(doResponse, message.command, message.data, reqProxy);
+      Promise.resolve(responseData).then(resolvedData => {
+        const responseMsg = initMessageData(message.__eventId, message.msgId, message.command, 'Response', resolvedData);
+        postMsg2Parent(responseMsg);
+      });
     }
     if (message.type === 'Response') {
       const matchCallback = callbackStacks.filter(item => item !== null).filter(item => item.command === message.command && item.id === message.msgId)[0];

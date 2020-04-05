@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent</title>
+    <script src="../dist/post-message-bus.umd.js"></script>
+</head>
+
+<body>
+
+    <script>
+        var log = msg => console.log(`[${location.pathname}] `, msg);
+    </script>
+    <script>
+        var bus1 = PostMessageBus.generateBusToFrame("child1.html", {
+            echo: function (from, req) {
+                log(`received echo ${from}`);
+                return req.getName().then(name => `Hello ${name}`);
+            }
+        });
+        document.body.append(bus1.frame);
+        bus1.then(req => {
+            log("child1.html is ready");
+        });
+    </script>
+    <script>
+        var bus2 = PostMessageBus.generateBusToFrame("child2.html", {
+            echo: function (from, req) {
+                log(`received echo ${from}`);
+                return req.getName().then(name => `Hello ${name}`);
+            }
+        });
+        document.body.append(bus2.frame);
+        bus2.then(({ request }) => {
+            log("child2.html is ready");
+            request.sendDate(new Date().toISOString()).then(() => {
+                log(`child has received date`);
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child</title>
+    <script src="../dist/post-message-bus.umd.js"></script>
+</head>
+
+<body>
+
+    <script>
+        var log = msg => console.log(`[${location.pathname}] `, msg);
+    </script>
+    <script>
+        const bus = PostMessageBus.generateBusToParent({
+            getName: function () {
+                return "Tim Cook";
+            },
+            sendDate: function (d) {
+                log(`received parent date: ${d}`);
+            }
+        });
+        bus.echo(location.href).then(greet => log(greet));
+    </script>
+</body>
+
+</html>
