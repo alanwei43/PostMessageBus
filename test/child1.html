@@ -9,7 +9,7 @@
 </head>
 
 <body>
-
+    <div>value: <span id="value"></span></div>
     <ol id="log"></ol>
     <script>
         var log = msg => {
@@ -23,6 +23,10 @@
         const bus = PostMessageBus.generateBusToParent({
             getName: function () {
                 return "Alan Wei";
+            },
+            changeValue: function (value) {
+                document.querySelector("#value").textContent = value;
+                return `[${location.pathname}] 更新成功`;
             }
         });
         bus.echo(location.href).then(greet => log(greet));

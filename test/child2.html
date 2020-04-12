@@ -9,6 +9,7 @@
 </head>
 
 <body>
+    <div>value: <span id="value"></span></div>
     <ol id="log"></ol>
     <script>
         var log = msg => {
@@ -25,6 +26,10 @@
             },
             sendDate: function (d) {
                 log(`received parent date: ${d}`);
+            },
+            updateValue: function (value) {
+                document.getElementById("value").textContent = value;
+                return `[${location.pathname}] 更新成功`;
             }
         });
         bus.echo(location.href).then(greet => log(greet));

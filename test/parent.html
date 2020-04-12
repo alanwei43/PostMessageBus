@@ -9,6 +9,10 @@
 </head>
 
 <body>
+    <div>
+        <input type="text" id="value" />
+        <button id="sync">同步到iframe</button>
+    </div>
     <ol id="log"></ol>
     <script>
         var log = msg => {
@@ -26,11 +30,12 @@
             }
         });
         document.body.append(bus1.frame);
-        bus1.then(req => {
+        var req1 = null;
+        bus1.then(({ request }) => {
+            req1 = request;
             log("child1.html is ready");
         });
-    </script>
-    <script>
+
         var bus2 = PostMessageBus.generateBusToFrame("child2.html", {
             echo: function (from, req) {
                 log(`received echo ${from}`);
@@ -38,11 +43,19 @@
             }
         });
         document.body.append(bus2.frame);
+        var req2 = null;
         bus2.then(({ request }) => {
+            req2 = request;
             log("child2.html is ready");
             request.sendDate(new Date().toISOString()).then(() => {
                 log(`child has received date`);
             });
+        });
+
+        document.getElementById("sync").addEventListener("click", function () {
+            const value = document.getElementById("value").value;
+            req1.changeValue(value).then(val => console.log(val));
+            req2.updateValue(value).then(val => console.log(val));
         });
     </script>
 </body>
