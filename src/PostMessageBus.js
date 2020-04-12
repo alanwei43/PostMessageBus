@@ -1,15 +1,7 @@
+import { getRandomKey, appendUrlParam } from './util';
 
 const win = window;
 const URL_PARA_NAME = 'post-message-event-id';
-
-/**
- * 获取随机字符串
- * @param {string} prefix 前缀
- * @returns {string}
- */
-function getRandomKey(prefix) {
-  return (prefix || '') + Date.now().toString(16) + Math.random().toString(16).substring(2);
-}
 
 /**
  * 初始化消息数据
@@ -105,8 +97,7 @@ export function generateBusToFrame(link, doResponse, targetOrigin) {
   if (typeof link !== 'string') {
     throw new Error('link 不能为空');
   }
-  const splitor = link.indexOf('?') === -1 ? '?' : '&';
-  result.frame.src = `${link}${splitor}${URL_PARA_NAME}=${eventId}`;
+  result.frame.src = appendUrlParam(link, URL_PARA_NAME, eventId);
   function postMsg2Frame(msg) {
     if (result.frame && result.frame.contentWindow) {
       result.frame.contentWindow.postMessage(Config.serializer(msg), targetOrigin || '*');

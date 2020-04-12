@@ -9,9 +9,14 @@
 </head>
 
 <body>
-
+    <ol id="log"></ol>
     <script>
-        var log = msg => console.log(`[${location.pathname}] `, msg);
+        var log = msg => {
+            const node = document.createElement("li");
+            document.querySelector("#log").appendChild(node);
+            node.textContent = msg;
+            console.log(`[${location.pathname}] `, msg);
+        }
     </script>
     <script>
         const bus = PostMessageBus.generateBusToParent({

@@ -1,5 +1,5 @@
 /*!
-  * PostMessageBus v0.0.3
+  * PostMessageBus v0.0.4
   * git+https://github.com/alanwei43/PostMessageBus.git
   * 
   * @author Alan Wei
@@ -8,8 +8,87 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var win = window;
-var URL_PARA_NAME = 'post-message-event-id';
+/**
+ * 删除末尾字符
+ * @param {string} str 带删除字符串
+ * @param {string[]} chars 字符
+ * @returns {string}
+ */
+function trimTailChars(str, chars) {
+  if (typeof str !== 'string') {
+    return str;
+  }
+
+  var validChars = (chars || []).filter(function (c) {
+    return typeof c === 'string' && c.length === 1;
+  });
+  var trimedStr = str;
+
+  var _loop = function _loop() {
+    var latestChar = trimedStr[trimedStr.length - 1] || '';
+
+    if (validChars.filter(function (c) {
+      return c === latestChar;
+    }).length) {
+      trimedStr = trimedStr.substr(0, trimedStr.length - 1);
+    } else {
+      return "break";
+    }
+  };
+
+  while (trimedStr.length) {
+    var _ret = _loop();
+
+    if (_ret === "break") break;
+  }
+
+  return trimedStr;
+}
+/**
+ * URL追加参数
+ * @param {String} url URL地址
+ * @param {String} paramName 参数名称
+ * @param {String} paramVal 参数值
+ * @returns {String} 追加参数后的URL地址
+ */
+
+
+function appendUrlParam(url, paramName, paramVal) {
+  if (typeof url !== 'string') {
+    return url;
+  }
+
+  if (paramVal === undefined || paramVal === null || paramVal === '') {
+    return url;
+  }
+
+  var trimedChars = ['?', '&', '#'];
+  var linkAddress = url;
+  var hashParts = url.split('#');
+  var hashParams = '';
+
+  if (hashParts.length > 1) {
+    linkAddress = hashParts[0];
+    hashParams = hashParts.slice(1, hashParts.length).join('#');
+  }
+
+  linkAddress = trimTailChars(linkAddress, trimedChars);
+
+  if (linkAddress.indexOf('?') === -1) {
+    // 没有?, URL链接增加?
+    linkAddress += '?';
+  } else {
+    linkAddress += '&';
+  }
+
+  linkAddress += "".concat(encodeURIComponent(paramName), "=").concat(encodeURIComponent(paramVal));
+
+  if (hashParams) {
+    linkAddress += '#' + hashParams;
+  }
+
+  return trimTailChars(linkAddress, trimedChars);
+}
 /**
  * 获取随机字符串
  * @param {string} prefix 前缀
@@ -19,6 +98,9 @@ var URL_PARA_NAME = 'post-message-event-id';
 function getRandomKey(prefix) {
   return (prefix || '') + Date.now().toString(16) + Math.random().toString(16).substring(2);
 }
+
+var win = window;
+var URL_PARA_NAME = 'post-message-event-id';
 /**
  * 初始化消息数据
  * @param {string} eventId 事件Id
@@ -27,7 +109,6 @@ function getRandomKey(prefix) {
  * @param {'Request' | 'Response'} type 类型
  * @param {object} data 传递的数据
  */
-
 
 function initMessageData(eventId, msgId, command, type, data) {
   return {
@@ -127,8 +208,7 @@ function generateBusToFrame(link, doResponse, targetOrigin) {
     throw new Error('link 不能为空');
   }
 
-  var splitor = link.indexOf('?') === -1 ? '?' : '&';
-  result.frame.src = "".concat(link).concat(splitor).concat(URL_PARA_NAME, "=").concat(eventId);
+  result.frame.src = appendUrlParam(link, URL_PARA_NAME, eventId);
 
   function postMsg2Frame(msg) {
     if (result.frame && result.frame.contentWindow) {
