@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iframe嵌套的子页面</title>
+    <style type="text/css">
+        ol {
+            margin-left: 0;
+            padding-left: 1em;
+            font-size: 0.8em;
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>iframe嵌套的子页面</h1>
+    <ol id="log"></ol>
+    <script src="../../dist/post-message-bus.umd.js"></script>
+    <script>
+        var log = msg => {
+            const node = document.createElement("li");
+            document.querySelector("#log").appendChild(node);
+            node.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            console.log(`[${location.pathname}] `, msg);
+        }
+        /**
+         * iframe嵌套的子页面
+         */
+        var childBus = PostMessageBus.generateBusToParent({
+            getPosition: function (data, parent) {
+                // 这里可以使用 parent 继续调用父级页面定义的方法
+                return Promise.resolve(location.pathname); //模拟Ajax调用
+            }
+        });
+        childBus.greet("呵呵").then(function (val) {
+            log(val); //=> 你好呵呵, 我知道你来自/test/one/child.html. 我叫哈哈
+        });
+    </script>
+</body>
+
+</html>

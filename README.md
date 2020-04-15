@@ -15,10 +15,49 @@ npm install post-message-bus
 
 ## Use
 
-`test` 目录下有例子, 点击访问 [例子](http://github.alanwei.net/PostMessageBus/test/parent.html) 打开控制台即可看到效果.
+
+点击访问[例子1](https://github.alanwei.net/PostMessageBus/test/one/parent.html)
+
+```js
+/**
+ * 父级页面
+ */ 
+var parentBus = PostMessageBus.generateBusToFrame("child.html", {
+    // 这里定义父级页面的方法, 供子页面调用
+    greet: function (name, child) {
+        // 这里可以继续使用 child 调用iframe中定义的方法
+        return child.getPosition().then(function (pos) {
+            // pos => /test/one/child.html
+            return `你好${name}, 我知道你来自${pos}. 我叫哈哈.`;
+        });
+    }
+});
+parentBus.then(function ({ request }) {
+    // 这里可以使用 request 调用子页面定义的方法
+    log("子页面加载完成");
+});
+// 将iframe添加到文档中
+document.body.append(parentBus.frame);
+
+/**
+ * iframe嵌套的子页面
+ */
+var childBus = PostMessageBus.generateBusToParent({
+    // 这里定义的子页面的方法, 供父级页面调用
+    getPosition: function (data, parent) {
+        // 这里可以使用 parent 继续调用父级页面定义的方法
+        return Promise.resolve(location.pathname); //模拟Ajax调用
+    }
+});
+childBus.greet("呵呵").then(function (val) {
+    log(val); //=> 你好呵呵, 我知道你来自/test/one/child.html. 我叫哈哈.
+});
+```
+
+
+点击访问 [例子2](https://github.alanwei.net/PostMessageBus/test/multi/parent.html):
 
 父页面使用以下代码初始化: 
-
 ```javascript
  var bus1 = PostMessageBus.generateBusToFrame("child2.html", {
     echo: function (from, req) {

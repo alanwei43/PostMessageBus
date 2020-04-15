@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>父级页面</title>
+    <style type="text/css">
+        iframe {
+            border: 1px solid gray;
+        }
+
+        ol {
+            margin-left: 0;
+            padding-left: 1em;
+            font-size: 0.8em;
+            color: #0094ff;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>父级页面</h1>
+    <ol id="log"></ol>
+    <script src="../../dist/post-message-bus.iife.js"></script>
+    <script>
+        var log = msg => {
+            const node = document.createElement("li");
+            document.querySelector("#log").appendChild(node);
+            node.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            console.log(`[${location.pathname}] `, msg);
+        }
+
+        var parentBus = PostMessageBus.generateBusToFrame("child.html", {
+            greet: function (name, child) {
+                // 这里可以继续使用 child 调用iframe中定义的方法
+                return child.getPosition().then(function (pos) {
+                    // pos => /test/one/child.html
+                    return `你好${name}, 我知道你来自${pos}. 我叫哈哈`;
+                });
+            }
+        });
+        parentBus.then(function () {
+            log("子页面加载完成");
+        });
+        // 将iframe添加到文档中
+        document.body.append(parentBus.frame);
+    </script>
+</body>
+
+</html>
