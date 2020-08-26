@@ -1,6 +1,6 @@
 # PostMessageBus
 
-跨iframe通信小工具, 要求浏览器支持 [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) 和 `URLSearchParams`.
+跨iframe通信小工具, 要求浏览器支持 [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) (如果浏览器不支持`Proxy`, 可以使用Google提供的[proxy-polyfill](https://github.com/GoogleChrome/proxy-polyfill)) 和 `URLSearchParams`.
 
 ## Install
 
