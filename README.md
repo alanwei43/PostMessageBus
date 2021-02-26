@@ -10,7 +10,7 @@ npm install post-message-bus
 
 或者直接引用
 ```html
-<script src="http://github.alanwei.net/PostMessageBus/dist/post-message-bus.umd.js"></script>
+<script src="https://blog.alanwei.net/PostMessageBus/dist/post-message-bus.umd.js"></script>
 ```
 
 ## Use
