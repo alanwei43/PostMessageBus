@@ -10,13 +10,13 @@ npm install post-message-bus
 
 或者直接引用
 ```html
-<script src="https://blog.alanwei.net/PostMessageBus/dist/post-message-bus.umd.js"></script>
+<script src="https://blog.alanwei.com/PostMessageBus/dist/post-message-bus.umd.js"></script>
 ```
 
 ## Use
 
 
-点击访问[例子1](https://github.alanwei.net/PostMessageBus/test/one/parent.html)
+点击访问[例子1](https://blog.alanwei.com/PostMessageBus/test/one/parent.html)
 
 ```js
 /**
@@ -55,7 +55,7 @@ childBus.greet("呵呵").then(function (val) {
 ```
 
 
-点击访问 [例子2](https://github.alanwei.net/PostMessageBus/test/multi/parent.html):
+点击访问 [例子2](https://blog.alanwei.com/PostMessageBus/test/multi/parent.html):
 
 父页面使用以下代码初始化: 
 ```javascript
