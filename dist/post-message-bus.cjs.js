@@ -1,5 +1,5 @@
 /*!
-  * PostMessageBus v0.0.4
+  * PostMessageBus v0.0.5
   * git+https://github.com/alanwei43/PostMessageBus.git
   * 
   * @author Alan Wei
@@ -164,7 +164,7 @@ function getDoResponseData(doResponse, cmd, data, context) {
 
   if (typeof doResponse === 'function') {
     resData = doResponse(cmd, data, context);
-  } else if (typeof doResponse[cmd] === 'function') {
+  } else if (doResponse && typeof doResponse[cmd] === 'function') {
     resData = doResponse[cmd](data, context);
   } else {
     console.warn(cmd + ' 没有对应实现');
