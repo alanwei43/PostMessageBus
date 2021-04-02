@@ -61,7 +61,7 @@ function getDoResponseData(doResponse, cmd, data, context) {
   let resData = {};
   if (typeof doResponse === 'function') {
     resData = doResponse(cmd, data, context);
-  } else if (typeof (doResponse[cmd]) === 'function') {
+  } else if (doResponse && typeof doResponse[cmd] === 'function') {
     resData = doResponse[cmd](data, context);
   } else {
     console.warn(cmd + ' 没有对应实现');
